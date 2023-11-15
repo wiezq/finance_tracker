@@ -1,10 +1,15 @@
+import io
 from uuid import uuid4
 from datetime import datetime
-from flask import Flask, render_template, redirect, request, session
+
+import numpy as np
+from flask import Flask, render_template, redirect, request, session, Response
 from flask_sqlalchemy import SQLAlchemy
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
 from sqlalchemy import DateTime
-# The Session instance is not used for direct access, you should always use flask.session
 from flask_session import Session
+from collections import defaultdict
 
 # CONFIG
 app = Flask(__name__)
@@ -34,7 +39,6 @@ class User(db.Model):
     notes = db.relationship('Note', backref='user', lazy=True)
 
 
-
 class Note(db.Model):
     __tablename__ = "notes"
     id = db.Column(db.Integer, primary_key=True)
@@ -51,12 +55,74 @@ with app.app_context():
 
 
 # ROUTES
+
+def plot_chart_by_categories():
+    notes = Note.query.filter_by(user_id=session.get("user_id")).all()
+    totals = defaultdict(int)
+    for note in notes:
+        totals[note.type] += note.amount
+    categories = list(totals.keys())
+    amounts = [totals[category] for category in categories]
+
+    fig = Figure()
+    axis = fig.add_subplot(1, 1, 1)
+    axis.bar(categories, amounts)
+    axis.set_xlabel('Category')
+    axis.set_ylabel('Total Amount Spent')
+    axis.set_title('Spending by Category')
+
+    # Set y-axis ticks
+    start, end = axis.get_ylim()
+    stepsize = 1000000  # Change this to your desired step size
+    axis.yaxis.set_ticks(np.arange(start, end, stepsize))
+    return fig
+
+
+def plot_pie_chart_by_categories():
+    notes = Note.query.filter_by(user_id=session.get("user_id")).all()
+    totals = defaultdict(int)
+    total = 0
+    for note in notes:
+        total += note.amount
+        totals[note.type] += note.amount
+    categories = list(totals.keys())
+    percents_in_categories = []
+    for category in categories:
+        category_total = totals[category]
+        percents_in_categories.append(category_total / total * 100)
+
+    fig = Figure()
+    axis = fig.add_subplot(1, 1, 1)
+    axis.pie(percents_in_categories, labels=categories, autopct='%1.1f%%')
+    return fig
+
+
+@app.route('/piechart.png')
+def plot_piechart():
+    fig = plot_pie_chart_by_categories()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
+@app.route('/chart.png')
+def plot_chart():
+    fig = plot_chart_by_categories()
+    output = io.BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
 @app.route("/", methods=["GET"])
 def menu():
     msg = ''
     if not session.get("user_id"):
         return redirect("/login")
-    notes = Note.query.filter_by(user_id=session.get("user_id")).all()
+        # Get page number from query parameter (default to 1 if not present)
+    page = request.args.get('page', 1, type=int)
+
+    # Get notes for the current page
+    notes = Note.query.filter_by(user_id=session.get("user_id")).paginate(page=page, per_page=5)
     return render_template('index.html', msg=msg, notes=notes)
 
 
@@ -100,7 +166,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         session["user_id"] = new_user.id
-        return redirect("/registration.html")
+        return redirect("/")
 
     return render_template("registration.html")
 
