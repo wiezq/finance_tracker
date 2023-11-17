@@ -10,6 +10,7 @@
         <p>You are not Register. <a href="/login">login</a>.</p>
     {% endif %}
 
+
     <div class="container">
         <h2>Spending Tracker</h2>
         <div class="row">
@@ -39,37 +40,80 @@
             </div>
             <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
                 <!-- Notes go here -->
-                <div class="notes">
-                    {% for note in notes.items %}
-                        <div class="card" style="width: 18rem;">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">{{ note.type }}</li>
-                                <li class="list-group-item">{{ note.amount }}</li>
-                                <li class="list-group-item">{{ note.date }}</li>
-                            </ul>
-                        </div>
+                {#                <div class="notes">#}
+                {#                    {% for note in notes.items %}#}
+                {#                        <div class="card" style="width: 18rem;">#}
+                {#                            <ul class="list-group list-group-flush">#}
+                {#                                <li class="list-group-item">{{ note.type }}</li>#}
+                {#                                <li class="list-group-item">{{ note.amount }}</li>#}
+                {#                                <li class="list-group-item">{{ note.date }}</li>#}
+                {#                            </ul>#}
+                {#                        </div>#}
+                {#                    {% endfor %}#}
+                {#                </div>#}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Category</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Actions</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for note in notes %}
+                        <tr>
+                            <td>{{ note.type }}</td>
+                            <td>{{ note.amount }}</td>
+                            <td>{{ note.date }}</td>
+
+                            <td>
+                                <a href="/delete/{{ note.id }}">
+                                    <button type="button" class="btn btn-danger">Delete</button>
+                                </a>
+
+                            </td>
+
+                        </tr>
                     {% endfor %}
-                </div>
+
+                    </tbody>
+                </table>
 
                 <!-- Pagination links -->
                 {% if notes.has_prev %}
-                    <a href="{{ url_for('menu', page=notes.prev_num) }}">Previous</a>
+                    <a href="{{ url_for('menu', page=notes.prev_num) }}">
+                        <button type="button" class="btn btn-primary">Prev</button>
+                    </a>
                 {% endif %}
                 {% if notes.has_next %}
-                    <a href="{{ url_for('menu', page=notes.next_num) }}">Next</a>
+                    <a href="{{ url_for('menu', page=notes.next_num) }}">
+                        <button type="button" class="btn btn-primary">Next</button>
+                    </a>
                 {% endif %}
 
             </div>
 
         </div>
+        {% if notes.has_next %}
         <div class="row">
             <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
-                <img src="/chart.png" alt="chart">
+                <img src="/category_chart.png" alt="chart">
             </div>
             <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
                 <img src="/piechart.png" alt="chart">
             </div>
         </div>
+        <div class="row">
+            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
+                <img src="/weekday_chart.png" alt="chart">
+            </div>
+            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
+                <img src="/month_chart.png" alt="chart">
+            </div>
+        </div>
+        {% endif %}
     </div>
 
 
