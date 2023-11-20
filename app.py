@@ -37,23 +37,42 @@ def handle_not_found(error):
     return redirect("/")
 
 
-@app.route('/<string:chart_type>.png', methods=['GET'])
+@app.route('/plot/<string:start_date>/<string:end_date>/<string:chart_type>.png', methods=['GET'])
 @login_required
-def get_pie_chart(chart_type):
-    notes = Note.query.filter_by(user_id=session.get("user_id")).all()
+def get_chart(chart_type, start_date, end_date):
+    # Convert the string dates to datetime objects
+    start_date = datetime.strptime(start_date, '%Y-%m-%d')
+    end_date = datetime.strptime(end_date, '%Y-%m-%d')
+
+    # Fetch notes between the start_date and end_date
+    notes = Note.query.filter(Note.user_id == session.get("user_id"), Note.date >= start_date,
+                              Note.date <= end_date).all()
+
+    if notes is None:
+        print("NONE ****************************88")
     fig = plot_chart(chart_type, notes)
     output = io.BytesIO()
     FigureCanvas(fig).print_png(output)
     return Response(output.getvalue(), mimetype='image/png')
 
 
-# @app.route('/chart.png', methods=['GET'])
-# @login_required
-# def get_chart():
-#     fig = plot_chart_by_categories()
-#     output = io.BytesIO()
-#     FigureCanvas(fig).print_png(output)
-#     return Response(output.getvalue(), mimetype='image/png')
+@app.route('/statistic', methods=["GET", "POST"])
+@login_required
+def statistic():
+    if request.method == "POST" and request.form["start_date"] and request.form["end_date"]:
+        start_date = datetime.strptime(request.form["start_date"], '%Y-%m-%d')
+        end_date = datetime.strptime(request.form["end_date"], '%Y-%m-%d')
+        notes_between_dates = Note.query.filter(Note.user_id == session.get("user_id"), Note.date >= start_date,
+                                                Note.date <= end_date).all()
+
+        if len(notes_between_dates) > 0:
+            start_date = str(start_date).split(" ")[0]
+            end_date = str(end_date).split(" ")[0]
+            return render_template("statistic.html", start_date=start_date, end_date=end_date)
+        else:
+            return render_template("statistic.html", start_date=None, end_date=None, msg="No notes found")
+
+    return render_template("statistic.html", start_date=None, end_date=None)
 
 
 @app.route('/', methods=["GET"])
@@ -96,11 +115,6 @@ def save_note():
                         user_id=user_id)
         db.session.add(new_note)
         db.session.commit()
-        print("New note added")
-
-    print(request.form["category"])
-    print(request.form["amount"])
-    print(request.form["date"])
     return redirect("/")
 
 
@@ -113,12 +127,13 @@ def save_note():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if session.get("user_id") is not None:
+        return redirect("/")
+
     if request.method == "POST" and request.form['email'] and request.form['username'] and request.form['password']:
         username = request.form['username']
         email = request.form['email']
         password = request.form['password']
-
-        print(username, email, password)
 
         user_exists = User.query.filter_by(email=email).first() is not None
 
@@ -136,6 +151,8 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if session.get("user_id") is not None:
+        return redirect("/")
     if request.method == "POST" and request.form['email'] and request.form['password']:
 
         email = request.form['email']

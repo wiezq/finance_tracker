@@ -27,7 +27,7 @@ def plot_bar_chart_by_month(notes):
     months = range(1, 13)
     months_total = [0] * 12
     for month in totals.keys():
-        months_total[month-1] = totals[month]
+        months_total[month - 1] = totals[month]
 
     fig, ax = plt.subplots()
     ax.bar(months, months_total, tick_label=[calendar.month_name[m][:3] for m in months])
@@ -42,11 +42,11 @@ def plot_bar_chart_by_day(notes):
     for note in notes:
         total += note.amount
         totals[note.date.weekday()] += note.amount
-    days = list(totals.keys())
+    # days = list(totals.keys())
+    days = [1, 2, 3, 4, 5, 6, 7]
     percents_in_days = []
     for day in days:
-        day_total = totals[day]
-        percents_in_days.append(day_total / total * 100)
+        percents_in_days.append(totals[day + 1] / total * 100)
 
     fig = Figure()
     axis = fig.add_subplot(1, 1, 1)
@@ -78,13 +78,6 @@ def plot_chart_by_categories(notes):
     axis.set_ylabel('Total Amount Spent')
     axis.set_title('Spending by Category')
 
-    # Rotate category names
-    plt.xticks(rotation=45)
-
-    # Set y-axis ticks
-    start, end = axis.get_ylim()
-    step_size = calculate_step_size(amounts)  # Change this to your desired step size
-    axis.yaxis.set_ticks(np.arange(start, end, step_size))
 
     return fig
 

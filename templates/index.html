@@ -1,21 +1,8 @@
 {% extends "base.html" %}
 {% block s %}
-    {{ msg }}
-    {% if session.user_id %}
-        <p>You are Register {{ session.user_id }} from db: {{ username }} <a href="/logout">logout</a>.</p>
-        {% if session.name == 'ara' %}
-            <p>This is for ARA</p>
-        {% endif %}
-    {% else %}
-        <p>You are not Register. <a href="/login">login</a>.</p>
-    {% endif %}
-
-
     <div class="container">
-        <h2>Spending Tracker</h2>
         <div class="row">
             <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
-                <!-- Form goes here -->
                 <form action="/save" method="POST">
                     <div class="form-group">
                         <label for="category">Category:</label>
@@ -39,18 +26,6 @@
                 </form>
             </div>
             <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
-                <!-- Notes go here -->
-                {#                <div class="notes">#}
-                {#                    {% for note in notes.items %}#}
-                {#                        <div class="card" style="width: 18rem;">#}
-                {#                            <ul class="list-group list-group-flush">#}
-                {#                                <li class="list-group-item">{{ note.type }}</li>#}
-                {#                                <li class="list-group-item">{{ note.amount }}</li>#}
-                {#                                <li class="list-group-item">{{ note.date }}</li>#}
-                {#                            </ul>#}
-                {#                        </div>#}
-                {#                    {% endfor %}#}
-                {#                </div>#}
                 <table class="table">
                     <thead>
                     <tr>
@@ -67,7 +42,6 @@
                             <td>{{ note.type }}</td>
                             <td>{{ note.amount }}</td>
                             <td>{{ note.date }}</td>
-
                             <td>
                                 <a href="/delete/{{ note.id }}">
                                     <button type="button" class="btn btn-danger">Delete</button>
@@ -80,40 +54,24 @@
 
                     </tbody>
                 </table>
+                <div class="container">
+                    {% if notes.has_prev %}
+                        <a href="{{ url_for('menu', page=notes.prev_num) }}">
+                            <button type="button" class="btn btn-primary">Prev</button>
+                        </a>
+                    {% endif %}
+                    {% if notes.has_next %}
+                        <a href="{{ url_for('menu', page=notes.next_num) }}">
+                            <button type="button" class="btn btn-primary">Next</button>
+                        </a>
+                    {% endif %}
+                </div>
 
-                <!-- Pagination links -->
-                {% if notes.has_prev %}
-                    <a href="{{ url_for('menu', page=notes.prev_num) }}">
-                        <button type="button" class="btn btn-primary">Prev</button>
-                    </a>
-                {% endif %}
-                {% if notes.has_next %}
-                    <a href="{{ url_for('menu', page=notes.next_num) }}">
-                        <button type="button" class="btn btn-primary">Next</button>
-                    </a>
-                {% endif %}
 
             </div>
 
         </div>
-        {% if notes.has_next %}
-        <div class="row">
-            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
-                <img src="/category_chart.png" alt="chart">
-            </div>
-            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
-                <img src="/piechart.png" alt="chart">
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
-                <img src="/weekday_chart.png" alt="chart">
-            </div>
-            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
-                <img src="/month_chart.png" alt="chart">
-            </div>
-        </div>
-        {% endif %}
+
     </div>
 
 
