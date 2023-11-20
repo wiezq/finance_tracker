@@ -84,7 +84,8 @@ def menu():
     page = request.args.get('page', 1, type=int)
 
     # Get notes for the current page
-    notes = Note.query.filter_by(user_id=session.get("user_id")).paginate(page=page, per_page=5)
+    notes = Note.query.filter_by(user_id=session.get("user_id")).order_by(Note.date.desc()).paginate(page=page,
+                                                                                                     per_page=5)
     for note in notes:
         note.date = note.date.strftime('%d-%m-%Y')
     return render_template('index.html', msg=msg, notes=notes)
@@ -109,10 +110,12 @@ def save_note():
         amount = request.form["amount"]
         date = request.form["date"]
         date = datetime.strptime(date, '%Y-%m-%d')
+        description = request.form["description"]
         new_note = Note(type=type,
                         amount=amount,
                         date=date,
-                        user_id=user_id)
+                        user_id=user_id,
+                        description=description)
         db.session.add(new_note)
         db.session.commit()
     return redirect("/")

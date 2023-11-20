@@ -25,4 +25,5 @@ class Note(db.Model):
     type = db.Column(db.String(50), nullable=False)
     amount = db.Column(db.Integer, nullable=False)
     date = db.Column(DateTime, nullable=False)
+    description = db.Column(db.Text, nullable=True)
     user_id = db.Column(db.String(32), db.ForeignKey('users.id'), nullable=False)

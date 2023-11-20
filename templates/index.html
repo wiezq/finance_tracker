@@ -22,6 +22,11 @@
                         <label for="date">Date:</label>
                         <input type="date" class="form-control" id="date" name="date">
                     </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Description</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                  name="description"></textarea>
+                    </div>
                     <button type="submit" class="btn btn-primary">Save</button>
                 </form>
             </div>
@@ -32,6 +37,7 @@
                         <th scope="col">Category</th>
                         <th scope="col">Amount</th>
                         <th scope="col">Date</th>
+                        <th scope="col">Description</th>
                         <th scope="col">Actions</th>
                         <th scope="col"></th>
                     </tr>
@@ -42,6 +48,7 @@
                             <td>{{ note.type }}</td>
                             <td>{{ note.amount }}</td>
                             <td>{{ note.date }}</td>
+                            <td>{{ note.description }}</td>
                             <td>
                                 <a href="/delete/{{ note.id }}">
                                     <button type="button" class="btn btn-danger">Delete</button>
@@ -73,7 +80,9 @@
         </div>
 
     </div>
-
+    <script>
+        document.getElementById('date').valueAsDate = new Date();
+    </script>
 
 
 

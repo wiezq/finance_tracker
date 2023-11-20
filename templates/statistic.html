@@ -22,6 +22,15 @@
                 <button type="submit" class="btn btn-primary">See statistic</button>
             </form>
         </div>
+        <script>
+            var dateFrom = new Date();
+            dateFrom.setMonth(dateFrom.getMonth() - 1);
+            document.getElementById('date_from').valueAsDate = dateFrom;
+
+            var dateTo = new Date();
+            document.getElementById('date_to').valueAsDate = dateTo;
+
+        </script>
 
 
     </div>
@@ -45,5 +54,7 @@
                 </div>
             </div>
         </div>
+
+
     {% endif %}
 {% endblock %}
