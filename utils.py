@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 import pandas
@@ -17,3 +18,4 @@ def import_csv(file_name, user_id, db):
                         user_id=user_id)
         db.session.add(new_note)
     db.session.commit()
+    os.remove(file_name)

@@ -1,11 +1,7 @@
 import calendar
 
-import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.figure import Figure
-
-from models import Note
-from flask import session
 from collections import defaultdict
 
 
@@ -77,7 +73,6 @@ def plot_chart_by_categories(notes):
     axis.set_xlabel('Category')
     axis.set_ylabel('Total Amount Spent')
     axis.set_title('Spending by Category')
-
 
     return fig
 

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block c %}
+    <div class="container">
+        {% if msg %}
+            <div class="row">
+                <div class="col">
+                    <div class="alert alert-warning" role="alert">
+                        {{ msg }}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col">
+                <form action="/import" method="POST" enctype="multipart/form-data">
+                    <input type="file" name="file"/>
+                    <input type="submit"/>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

@@ -1,9 +1,37 @@
 {% extends "base.html" %}
 {% block s %}
     <div class="container">
+        {% if msg %}
+            <div class="alert alert-warning" role="alert">
+                {{ msg }}
+            </div>
+        {% endif %}
+
+    {% if msg %}
+        {% if spent_within_budget / budget.amount >= 0.8 and spent_within_budget < budget.amount %}
+            <div class="alert alert-warning" role="alert">
+                Soon you will exceed your budget!
+            </div>
+        {% elif spent_within_budget >= budget.amount %}
+            <div class="alert alert-danger" role="alert">
+                You exceeded your budget!
+
+            </div>
+        {% endif %}
+
+        <div class="alert alert-primary" role="alert">
+            Budget: {{ budget.amount }}
+        </div>
+        <div class="alert alert-primary" role="alert">
+            Money spent between {{ budget.date_from }} to {{ budget.date_to }} : {{ spent_within_budget }}
+        </div>
+        <div class="alert alert-primary" role="alert">
+            Money left: {{ total_amount }}
+        </div>
         <div class="row">
             <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
-                <form action="/save" method="POST">
+                <h2>Expenses</h2>
+                <form action="/save_expenses" method="POST">
                     <div class="form-group">
                         <label for="category">Category:</label>
                         <select class="form-control" id="category" name="category">
@@ -20,7 +48,7 @@
                     </div>
                     <div class="form-group">
                         <label for="date">Date:</label>
-                        <input type="date" class="form-control" id="date" name="date">
+                        <input type="date" class="form-control date" id="date" name="date">
                     </div>
                     <div class="form-group">
                         <label for="exampleFormControlTextarea1">Description</label>
@@ -63,12 +91,12 @@
                 </table>
                 <div class="container">
                     {% if notes.has_prev %}
-                        <a href="{{ url_for('menu', page=notes.prev_num) }}">
+                        <a href="{{ url_for('menu', notes_page=notes.prev_num) }}">
                             <button type="button" class="btn btn-primary">Prev</button>
                         </a>
                     {% endif %}
                     {% if notes.has_next %}
-                        <a href="{{ url_for('menu', page=notes.next_num) }}">
+                        <a href="{{ url_for('menu', notes_page=notes.next_num) }}">
                             <button type="button" class="btn btn-primary">Next</button>
                         </a>
                     {% endif %}
@@ -78,14 +106,90 @@
             </div>
 
         </div>
+        <div class="row">
+
+            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
+                <h2>Incomes</h2>
+                <form action="/save_income" method="POST">
+                    <div class="form-group">
+                        <label for="category">Category:</label>
+                        <select class="form-control" id="category" name="category">
+                            <option>Salary</option>
+                            <option>Donation</option>
+                            <option>Investment</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount:</label>
+                        <input type="number" class="form-control" id="amount" placeholder="Enter amount" name="amount">
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date:</label>
+                        <input type="date" class="form-control date" id="date" name="date">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Description</label>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
+                                  name="description"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
+            </div>
+
+            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Category</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Actions</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for income in incomes %}
+                        <tr>
+                            <td>{{ income.type }}</td>
+                            <td>{{ income.amount }}</td>
+                            <td>{{ income.date }}</td>
+                            <td>{{ income.description }}</td>
+
+                            {#                            <td>#}
+                            {#                                <a href="/delete/{{ note.id }}">#}
+                            {#                                    <button type="button" class="btn btn-danger">Delete</button>#}
+                            {#                                </a>#}
+                            {##}
+                            {#                            </td>#}
+
+                        </tr>
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+                <div class="container">
+                    {% if incomes.has_prev %}
+                        <a href="{{ url_for('menu', income_page=incomes.prev_num) }}">
+                            <button type="button" class="btn btn-primary">Prev</button>
+                        </a>
+                    {% endif %}
+                    {% if incomes.has_next %}
+                        <a href="{{ url_for('menu', income_page=incomes.next_num) }}">
+                            <button type="button" class="btn btn-primary">Next</button>
+                        </a>
+                    {% endif %}
+                </div>
+
+
+            </div>
+        </div>
 
     </div>
     <script>
-        document.getElementById('date').valueAsDate = new Date();
+        const date = document.getElementsByClassName('date');
+        for (let i = 0; i < date.length; i++) {
+            date[i].valueAsDate = new Date();
+        }
     </script>
-
-
-
-
-
 {% endblock %}
