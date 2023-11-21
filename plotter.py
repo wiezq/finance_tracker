@@ -40,9 +40,9 @@ def plot_bar_chart_by_day(notes):
         totals[note.date.weekday()] += note.amount
     # days = list(totals.keys())
     days = [1, 2, 3, 4, 5, 6, 7]
-    percents_in_days = []
-    for day in days:
-        percents_in_days.append(totals[day + 1] / total * 100)
+    percents_in_days = [0] * 7
+    for day in totals.keys():
+        percents_in_days[day - 1] = ((totals[day] / total) * 100)
 
     fig = Figure()
     axis = fig.add_subplot(1, 1, 1)

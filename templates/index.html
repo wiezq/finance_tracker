@@ -7,24 +7,27 @@
             </div>
         {% endif %}
 
-    {% if msg %}
-        {% if spent_within_budget / budget.amount >= 0.8 and spent_within_budget < budget.amount %}
-            <div class="alert alert-warning" role="alert">
-                Soon you will exceed your budget!
-            </div>
-        {% elif spent_within_budget >= budget.amount %}
-            <div class="alert alert-danger" role="alert">
-                You exceeded your budget!
+        {% if spent_within_budget and budget %}
+            {% if spent_within_budget / budget.amount >= 0.8 and spent_within_budget < budget.amount %}
+                <div class="alert alert-warning" role="alert">
+                    Soon you will exceed your budget!
+                </div>
+            {% elif spent_within_budget >= budget.amount %}
+                <div class="alert alert-danger" role="alert">
+                    You exceeded your budget!
 
-            </div>
+                </div>
+            {% endif %}
         {% endif %}
-
+        {% if budget %}
         <div class="alert alert-primary" role="alert">
             Budget: {{ budget.amount }}
         </div>
+
         <div class="alert alert-primary" role="alert">
             Money spent between {{ budget.date_from }} to {{ budget.date_to }} : {{ spent_within_budget }}
         </div>
+        {% endif %}
         <div class="alert alert-primary" role="alert">
             Money left: {{ total_amount }}
         </div>

@@ -1,7 +1,9 @@
 import os
 from datetime import datetime
+from functools import wraps
 
 import pandas
+from flask import session, redirect, url_for
 
 from models import Note
 
@@ -19,3 +21,32 @@ def import_csv(file_name, user_id, db):
         db.session.add(new_note)
     db.session.commit()
     os.remove(file_name)
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("user_id") is None:
+            return redirect(url_for('entrance.login'))
+        return f(*args, **kwargs)
+
+    return decorated_function
+
+
+def calculate_balance(notes, incomes):
+    total_amount = 0
+    for income in incomes:
+        total_amount += income.amount
+    for note in notes:
+        total_amount -= note.amount
+    return total_amount
+
+
+def calculate_budget_spending(notes, budget):
+    date_from = budget.date_from
+    date_to = budget.date_to
+    total_spend = 0
+    for note in notes:
+        if date_from <= note.date <= date_to:
+            total_spend += note.amount
+    return total_spend
