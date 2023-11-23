@@ -10,10 +10,17 @@ services:
       - db
     environment:
       - SQLALCHEMY_DATABASE_URI=mysql+mysqlconnector://root:password@db/mydatabase
+      - SECRET_KEY=secret_key
   db:
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: mydatabase
+
+    ports:
+      - "3306:3306"
     volumes:
-      - ./data/db:/var/lib/mysql
+      - db_data:/var/lib/mysql
+
+volumes:
+    db_data:

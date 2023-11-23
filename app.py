@@ -4,15 +4,13 @@ from config import AppConfig
 from flask_session import Session
 from models import db
 
-
 from routes.budget import budget
-from routes.entrance import entrance,bcrypt
+from routes.entrance import entrance, bcrypt
 from routes.imprt import imprt
 from routes.income import income
 from routes.menu import menus
 from routes.note import note
 from routes.statistic import statistics
-
 
 from routes.handlers.ErrorHandler import handler
 

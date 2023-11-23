@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block s %}
-    <div class="container">
+    <div class="container-lg">
         {% if msg %}
             <div class="alert alert-warning" role="alert">
                 {{ msg }}
@@ -34,6 +34,7 @@
 
         <div class="row">
             <div class="col-md-6 d-flex justify-content-start    align-items-center flex-column">
+
                 <h2>Expenses</h2>
                 <table class="table">
                     <thead>
@@ -55,8 +56,7 @@
                         <td>
 
                             <button type="button" class="btn btn-primary" data-toggle="modal"
-                                    data-target=".expensesModal">
-                                +
+                                    data-target=".expensesModal">+
                             </button>
 
                             <!-- Modal -->
@@ -123,7 +123,10 @@
                             <td>{{ note.date }}</td>
                             <td>{{ note.description }}</td>
                             <td>
-                                <button type="button" class="btn btn-danger">X</button>
+                                <a href="/delete_note/{{ note.id }}">
+                                    <button type="button" class="btn btn-danger">X</button>
+                                </a>
+
 
                             </td>
 
@@ -234,7 +237,7 @@
                             <td>{{ income.description }}</td>
 
                             <td>
-                                <a href="#" }>
+                                <a href="/delete_income/{{ income.id }}" }>
                                     <button type="button" class="btn btn-danger">X</button>
                                 </a>
 
@@ -269,18 +272,6 @@
             date[i].valueAsDate = new Date();
         }
     </script>
-
-    {# INCOME FORM   #}
-    <form action="/save_income" method="POST" id="incomeForm" style="display: none;">
-
-        <button type="submit" class="btn btn-primary">Save</button>
-
-
-    </form>
-
-
-
-    {# EXPENSES FORM #}
 
 
 

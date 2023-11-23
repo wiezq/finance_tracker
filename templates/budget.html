@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% block budget %}
     <div class="container">
+
+
         {% if msg %}
             <div class="row">
                 <div class="col">
@@ -11,29 +13,37 @@
             </div>
         {% endif %}
 
-        <h2>Budget</h2>
-        <form action="/save_budget" method="POST">
-            <div class="form-group">
-                <label for="amount">Amount:</label>
-                <input type="number" class="form-control" id="amount" placeholder="Enter amount" name="amount">
+        <div class="row justify-content-center">
+            <div class="col-4">
+                <h2>Budget</h2>
+                <form action="/save_budget" method="POST">
+                    <div class="form-group">
+                        <label for="amount">Amount:</label>
+                        <input type="number" class="form-control" id="amount" placeholder="Enter amount" name="amount">
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date:</label>
+                        <input type="date" class="form-control date" id="date" name="date_from">
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date:</label>
+                        <input type="date" class="form-control date" id="date" name="date_to">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="date">Date:</label>
-                <input type="date" class="form-control date" id="date" name="date_from">
-            </div>
-            <div class="form-group">
-                <label for="date">Date:</label>
-                <input type="date" class="form-control date" id="date" name="date_to">
-            </div>
-            <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+
+            <div class="col-4 align-self-center">{% if budget %}
+                <p>Amount: {{ budget.amount }}</p>
+                <p>From: {{ budget.date_from }}</p>
+                <p>To: {{ budget.date_to }}</p>
+                <a href="/delete_budget" class="btn btn-danger">Delete</a>
+            {% endif %}</div>
+        </div>
+
 
     </div>
     <div class="container">
-        {% if budget %}
-            <p>Amount: {{ budget.amount }}</p>
-            <p>From: {{ budget.date_from }}</p>
-            <p>To: {{ budget.date_to }}</p>
-        {% endif %}
+
     </div>
 {% endblock %}

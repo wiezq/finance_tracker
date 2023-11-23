@@ -22,7 +22,19 @@ def save_budget():
         if budget is not None:
             return render_template("budget.html", msg="You already have a budget", budget=budget)
         save_new_budget(request.form)
-    return redirect("/")
+    else:
+        return render_template("budget.html", msg="Invalid form", budget=None)
+    return redirect("/budget")
+
+
+@login_required
+@budget.route('/delete_budget', methods=['GET'])
+def delete_budget():
+    budget = get_budget()
+    if budget is not None:
+        Budget.query.filter_by(user_id=session.get("user_id")).delete()
+        db.session.commit()
+    return redirect("/budget")
 
 
 def get_budget():
@@ -30,7 +42,11 @@ def get_budget():
 
 
 def validate_budget_form(form):
-    return form["amount"] and form["date_from"] and form["date_to"]
+    if form["amount"] and form["date_from"] and form["date_to"]:
+        if datetime.strptime(form["date_from"], '%Y-%m-%d') < datetime.strptime(form["date_to"], '%Y-%m-%d'):
+            if int(form["amount"]) > 0:
+                return True
+    return False
 
 
 def save_new_budget(form):

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, session
-from models import Note, Income, Budget
+from models import Note, Income, Budget, User
 from utils import login_required, calculate_balance, calculate_budget_spending
 
 menus = Blueprint('routes', __name__)
@@ -28,6 +28,7 @@ def get_notes_and_incomes(notes_page, income_page):
                                                                                                      per_page=5)
     incomes = Income.query.filter_by(user_id=session.get("user_id")).order_by(Income.date.desc()).paginate(
         page=income_page, per_page=5)
+
     return notes, incomes
 
 
@@ -41,7 +42,6 @@ def get_budget_and_totals():
 
 
 def format_dates(notes, incomes, budget):
-
     for note in notes.items:
         note.date = note.date.strftime('%d-%m-%Y')
     for income in incomes.items:

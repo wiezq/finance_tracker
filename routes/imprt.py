@@ -12,7 +12,7 @@ FILE_DIR = "temp_files"
 def import_csv_file():
     if request.method == "POST" and request.files["file"]:
         file = request.files["file"]
-        if file.filename.endswith(".csv"):
+        if file.filename.endswith(".csv") and file:
             file_path = f"{FILE_DIR}/{session.get('user_id')}.csv"
             file.save(file_path, )
             import_csv(file_path, session.get("user_id"), db)

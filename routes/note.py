@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 
 from flask import Blueprint, session, redirect, request
@@ -9,7 +10,7 @@ note = Blueprint('note', __name__)
 
 
 @login_required
-@note.route('/delete/<int:note_id>', methods=['GET'])
+@note.route('/delete_note/<int:note_id>', methods=['GET'])
 def delete_note(note_id):
     if note_id:
         delete_note_by_id(note_id)
@@ -34,7 +35,7 @@ def delete_note_by_id(note_id):
 
 def validate_form(form):
     if form["category"] and form["amount"] and form["date"]:
-        if form["amount"].isdigit() and int(form["amount"]) > 0:
+        if form["amount"].isdigit() and 0 < int(form["amount"]) <= sys.maxsize:
             return True
 
     return False

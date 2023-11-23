@@ -34,6 +34,8 @@ def handle_registration(form):
     db.session.add(new_user)
     db.session.commit()
     session["user_id"] = new_user.id
+    session["username"] = new_user.username
+    session["email"] = new_user.email
     return redirect("/")
 
 
@@ -56,6 +58,8 @@ def handle_login(form):
     user = User.query.filter_by(email=email, password=password).first()
     if user and bcrypt.check_password_hash(user.password, password):
         session["user_id"] = user.id
+        session["username"] = user.username
+        session["email"] = user.email
         return redirect("/")
     return render_template("login.html", msg='User not found'), 401
 
