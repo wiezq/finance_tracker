@@ -11,7 +11,7 @@ menus = Blueprint('routes', __name__)
 def menu(msg):
     notes_page, income_page = get_pages()
     notes, incomes = get_notes_and_incomes(notes_page, income_page)
-    budget, total_amount, spent_within_budget_dates = get_budget_and_totals(notes, incomes)
+    budget, total_amount, spent_within_budget_dates = get_budget_and_totals()
     format_dates(notes, incomes, budget)
     return render_template('index.html', msg=msg, notes=notes, incomes=incomes,
                            total_amount=total_amount, budget=budget, spent_within_budget=spent_within_budget_dates)
@@ -31,12 +31,12 @@ def get_notes_and_incomes(notes_page, income_page):
     return notes, incomes
 
 
-def get_budget_and_totals(notes, incomes):
+def get_budget_and_totals():
     budget = Budget.query.filter_by(user_id=session.get("user_id")).first()
-    balance = calculate_balance(notes.items, incomes.items)
+    balance = calculate_balance()
     on_budget_spending = None
     if budget is not None:
-        on_budget_spending = calculate_budget_spending(notes, budget)
+        on_budget_spending = calculate_budget_spending()
     return budget, balance, on_budget_spending
 
 

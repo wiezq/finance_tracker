@@ -5,7 +5,7 @@ from functools import wraps
 import pandas
 from flask import session, redirect, url_for
 
-from models import Note
+from models import Note, Budget, Income
 
 
 def import_csv(file_name, user_id, db):
@@ -33,7 +33,9 @@ def login_required(f):
     return decorated_function
 
 
-def calculate_balance(notes, incomes):
+def calculate_balance():
+    notes = Note.query.filter_by(user_id=session.get("user_id")).all()
+    incomes = Income.query.filter_by(user_id=session.get("user_id")).all()
     total_amount = 0
     for income in incomes:
         total_amount += income.amount
@@ -42,7 +44,9 @@ def calculate_balance(notes, incomes):
     return total_amount
 
 
-def calculate_budget_spending(notes, budget):
+def calculate_budget_spending():
+    notes = Note.query.filter_by(user_id=session.get("user_id")).all()
+    budget = Budget.query.filter_by(user_id=session.get("user_id")).first()
     date_from = budget.date_from
     date_to = budget.date_to
     total_spend = 0

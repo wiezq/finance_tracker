@@ -20,15 +20,9 @@ def delete_note(note_id):
 @note.route('/save_expenses', methods=['POST'])
 def save_note():
     if validate_form(request.form):
-
-        notes = Note.query.filter_by(user_id=session.get("user_id")).all()
-        income = Income.query.filter_by(user_id=session.get("user_id")).all()
-
-        balance = calculate_balance(notes=notes, incomes=income)
-        expense_amount = int(request.form["amount"])
-        if balance - expense_amount < 0:
-            return redirect(f"/menu/You don't have enough money to spend")
         save_new_note(request.form)
+    else:
+        return redirect("/menu/Invalid form data")
     return redirect("/")
 
 
@@ -39,7 +33,11 @@ def delete_note_by_id(note_id):
 
 
 def validate_form(form):
-    return form["category"] and form["amount"] and form["date"]
+    if form["category"] and form["amount"] and form["date"]:
+        if form["amount"].isdigit() and int(form["amount"]) > 0:
+            return True
+
+    return False
 
 
 def save_new_note(form):

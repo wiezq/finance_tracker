@@ -20,48 +20,21 @@
             {% endif %}
         {% endif %}
         {% if budget %}
-        <div class="alert alert-primary" role="alert">
-            Budget: {{ budget.amount }}
-        </div>
+            <div class="alert alert-primary" role="alert">
+                Budget: {{ budget.amount }}
+            </div>
 
-        <div class="alert alert-primary" role="alert">
-            Money spent between {{ budget.date_from }} to {{ budget.date_to }} : {{ spent_within_budget }}
-        </div>
+            <div class="alert alert-primary" role="alert">
+                Money spent between {{ budget.date_from }} to {{ budget.date_to }} : {{ spent_within_budget }}
+            </div>
         {% endif %}
         <div class="alert alert-primary" role="alert">
             Money left: {{ total_amount }}
         </div>
+
         <div class="row">
-            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
+            <div class="col-md-6 d-flex justify-content-start    align-items-center flex-column">
                 <h2>Expenses</h2>
-                <form action="/save_expenses" method="POST">
-                    <div class="form-group">
-                        <label for="category">Category:</label>
-                        <select class="form-control" id="category" name="category">
-                            <option>Shopping</option>
-                            <option>Drugs</option>
-                            <option>Gas Station</option>
-                            <option>Rent</option>
-                            <option>Groceries</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="amount">Amount:</label>
-                        <input type="number" class="form-control" id="amount" placeholder="Enter amount" name="amount">
-                    </div>
-                    <div class="form-group">
-                        <label for="date">Date:</label>
-                        <input type="date" class="form-control date" id="date" name="date">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleFormControlTextarea1">Description</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                                  name="description"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </form>
-            </div>
-            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
                 <table class="table">
                     <thead>
                     <tr>
@@ -74,6 +47,75 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tr>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>
+
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target=".expensesModal">
+                                +
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade expensesModal" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <form action="/save_expenses" method="POST" id="expensesForm">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Add new expenses</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                <div class="form-group">
+                                                    <label for="category">Category:</label>
+                                                    <select class="form-control" id="category" name="category">
+                                                        <option>Shopping</option>
+                                                        <option>Drugs</option>
+                                                        <option>Gas Station</option>
+                                                        <option>Rent</option>
+                                                        <option>Groceries</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="amount">Amount:</label>
+                                                    <input type="number" class="form-control" id="amount"
+                                                           placeholder="Enter amount"
+                                                           name="amount">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="date">Date:</label>
+                                                    <input type="date" class="form-control date" id="date" name="date">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="exampleFormControlTextarea1">Description</label>
+                                                    <textarea class="form-control" id="exampleFormControlTextarea1"
+                                                              rows="3"
+                                                              name="description"></textarea>
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </td>
+
+                    </tr>
                     {% for note in notes %}
                         <tr>
                             <td>{{ note.type }}</td>
@@ -81,9 +123,7 @@
                             <td>{{ note.date }}</td>
                             <td>{{ note.description }}</td>
                             <td>
-                                <a href="/delete/{{ note.id }}">
-                                    <button type="button" class="btn btn-danger">Delete</button>
-                                </a>
+                                <button type="button" class="btn btn-danger">X</button>
 
                             </td>
 
@@ -94,12 +134,12 @@
                 </table>
                 <div class="container">
                     {% if notes.has_prev %}
-                        <a href="{{ url_for('menu', notes_page=notes.prev_num) }}">
+                        <a href="{{ url_for('routes.menu', notes_page=notes.prev_num) }}">
                             <button type="button" class="btn btn-primary">Prev</button>
                         </a>
                     {% endif %}
                     {% if notes.has_next %}
-                        <a href="{{ url_for('menu', notes_page=notes.next_num) }}">
+                        <a href="{{ url_for('routes.menu', notes_page=notes.next_num) }}">
                             <button type="button" class="btn btn-primary">Next</button>
                         </a>
                     {% endif %}
@@ -107,39 +147,8 @@
 
 
             </div>
-
-        </div>
-        <div class="row">
-
-            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
+            <div class="col-md-6 d-flex justify-content-start align-items-center flex-column">
                 <h2>Incomes</h2>
-                <form action="/save_income" method="POST">
-                    <div class="form-group">
-                        <label for="category">Category:</label>
-                        <select class="form-control" id="category" name="category">
-                            <option>Salary</option>
-                            <option>Donation</option>
-                            <option>Investment</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="amount">Amount:</label>
-                        <input type="number" class="form-control" id="amount" placeholder="Enter amount" name="amount">
-                    </div>
-                    <div class="form-group">
-                        <label for="date">Date:</label>
-                        <input type="date" class="form-control date" id="date" name="date">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleFormControlTextarea1">Description</label>
-                        <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"
-                                  name="description"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </form>
-            </div>
-
-            <div class="col-md-6 d-flex justify-content-center align-items-center flex-column">
                 <table class="table">
                     <thead>
                     <tr>
@@ -152,6 +161,71 @@
                     </tr>
                     </thead>
                     <tbody>
+                    <tr>
+
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>
+                            <button type="button" class="btn btn-primary" data-toggle="modal"
+                                    data-target=".incomeModal">
+                                +
+                            </button>
+
+                            <!-- Modal -->
+                            <div class="modal fade incomeModal" id="exampleModalCenter" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <form action="/save_income" method="POST" id="expensesForm">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLongTitle">Add new expenses</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <h2>Save new income</h2>
+                                                <div class="form-group">
+                                                    <label for="category">Category:</label>
+                                                    <select class="form-control" id="category" name="category">
+                                                        <option>Salary</option>
+                                                        <option>Donation</option>
+                                                        <option>Investment</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="amount">Amount:</label>
+                                                    <input type="number" class="form-control" id="amount"
+                                                           placeholder="Enter amount" name="amount">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="date">Date:</label>
+                                                    <input type="date" class="form-control date" id="date" name="date">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="exampleFormControlTextarea1">Description</label>
+                                                    <textarea class="form-control" id="exampleFormControlTextarea1"
+                                                              rows="3"
+                                                              name="description"></textarea>
+                                                </div>
+
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                                    Close
+                                                </button>
+                                                <button type="submit" class="btn btn-primary">Save</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                    </tr>
                     {% for income in incomes %}
                         <tr>
                             <td>{{ income.type }}</td>
@@ -159,12 +233,12 @@
                             <td>{{ income.date }}</td>
                             <td>{{ income.description }}</td>
 
-                            {#                            <td>#}
-                            {#                                <a href="/delete/{{ note.id }}">#}
-                            {#                                    <button type="button" class="btn btn-danger">Delete</button>#}
-                            {#                                </a>#}
-                            {##}
-                            {#                            </td>#}
+                            <td>
+                                <a href="#" }>
+                                    <button type="button" class="btn btn-danger">X</button>
+                                </a>
+
+                            </td>
 
                         </tr>
                     {% endfor %}
@@ -173,12 +247,12 @@
                 </table>
                 <div class="container">
                     {% if incomes.has_prev %}
-                        <a href="{{ url_for('menu', income_page=incomes.prev_num) }}">
+                        <a href="{{ url_for('routes.menu', income_page=incomes.prev_num) }}">
                             <button type="button" class="btn btn-primary">Prev</button>
                         </a>
                     {% endif %}
                     {% if incomes.has_next %}
-                        <a href="{{ url_for('menu', income_page=incomes.next_num) }}">
+                        <a href="{{ url_for('routes.menu', income_page=incomes.next_num) }}">
                             <button type="button" class="btn btn-primary">Next</button>
                         </a>
                     {% endif %}
@@ -195,4 +269,19 @@
             date[i].valueAsDate = new Date();
         }
     </script>
+
+    {# INCOME FORM   #}
+    <form action="/save_income" method="POST" id="incomeForm" style="display: none;">
+
+        <button type="submit" class="btn btn-primary">Save</button>
+
+
+    </form>
+
+
+
+    {# EXPENSES FORM #}
+
+
+
 {% endblock %}
