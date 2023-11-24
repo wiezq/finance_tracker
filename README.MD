@@ -4,11 +4,3 @@ To run application:
 ```docker-compose up```
 3. Open the following link in your browser:
 ```http://localhost:5050/```
-
-
-# Project structure
-## Backend
-### Backend is written in Python 3.8.5
-### Used libraries:
-- Flask
-- 
