@@ -25,8 +25,9 @@ def handle_registration(form):
     username = form['username']
     email = form['email']
     password = form['password']
-    user_exists = User.query.filter_by(email=email).first() is not None
-    if user_exists:
+    user_exists_email = User.query.filter_by(email=email).first() is not None
+    user_exists_username = User.query.filter_by(username=username).first() is not None
+    if user_exists_email or user_exists_username:
         return render_template("registration.html", msg='User already exists'), 401
 
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')

@@ -6,8 +6,8 @@
 
     <div class="grid">
         {% if msg %}
-            <div class="warning">
-                <p>{{ msg }}</p>
+            <div class="alert alert-warning" role="alert">
+                {{ msg }}
             </div>
         {% endif %}
         <form action="/login" method="POST" class="form login">
